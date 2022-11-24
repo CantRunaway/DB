@@ -19,7 +19,7 @@ CREATE TRIGGER Complete_Apply_Recruit
     ON Overtime
     FOR EACH ROW
     BEGIN
-		IF new.cover_state = 1 THEN
+	IF new.cover_state = 1 THEN
         CALL UpdateRecruit(new.recruit_index);
         END IF;
 	END;
