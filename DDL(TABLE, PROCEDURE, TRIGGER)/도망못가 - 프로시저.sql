@@ -53,3 +53,31 @@ CREATE PROCEDURE Make_work_type_wage(
 		values((SELECT work_type_index FROM work_type WHERE work_type_name = PARAM_WORK_NAME), PARAM_DATE, PARAM_WAGE); 
 	END;
 DELIMITER;
+
+#출근 시 유저 상태 변경 및 로그에 추가, 수동 출근도 동일하게 사용
+DELIMITER & 
+CREATE PROCEDURE Diligence(
+	PARAM_USER_ID VARCHAR(40),
+    PARAM_WORK_INDEX INT,
+    PARAM_TIME TIMESTAMP
+    )
+    BEGIN
+		UPDATE USER SET work_state = 1 WHERE user_id = PARAM_USER_ID;
+        
+        INSERT INTO commute_log(user_id, work_index, commute_time) values (PARAM_USER_ID, PARAM_WORK_INDEX, PARAM_TIME);
+	END;
+DELIMITER;
+
+#퇴근 시 유저 상태 변경 및 로그에 추가, 수동 퇴근도 동일하게 사용
+DELIMITER & 
+CREATE PROCEDURE Laziness(
+	PARAM_USER_ID VARCHAR(40),
+    PARAM_WORK_INDEX INT,
+    PARAM_TIME TIMESTAMP
+    )
+    BEGIN
+		UPDATE USER SET work_state = 0 WHERE user_id = PARAM_USER_ID;
+        
+        INSERT INTO commute_log(user_id, work_index, commute_time) values (PARAM_USER_ID, PARAM_WORK_INDEX, PARAM_TIME);
+	END;
+DELIMITER;
